@@ -2,6 +2,7 @@
 
 namespace Kata;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -123,5 +124,26 @@ class ElevatorTest extends TestCase
         $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
         $this->assertNull($elevator->getTargetFloor());
         $this->assertEquals(2, $elevator->getCurrentFloor());
+    }
+
+    public function testElevatorTriggersElevatorEventWhenChangingFloor():void
+    {
+        $eventPipeline = EventPipeline::getInstance();
+        $subscriber = $this->getElevatorEventSubscriberMock();
+        $subscriber->expects($this->exactly(2))->method('respond')->willReturnCallback(function (ElevatorEvent $event) {
+            $this->assertEquals('changed-floor', $event->getEventType());
+        });
+        $eventPipeline->addSubscriber($subscriber);
+        $elevator = new Elevator();
+        $elevator->move(2);
+        $elevator->act();
+        $elevator->act();
+    }
+
+    public function getElevatorEventSubscriberMock(): Subscriber|MockObject
+    {
+        $mock = $this->createMock(Subscriber::class);
+        $mock->method('getEventName')->willReturn('elevator-event');
+        return $mock;
     }
 }

@@ -27,20 +27,17 @@ class Elevator {
 
     public function act(): void
     {
-        if ($this->targetFloor === null) {
+        if (!$this->hasTarget()) {
             return;
         }
+
         $this->currentState = self::STATE_MOVING;
         $this->currentDirection = ($this->currentFloor < $this->targetFloor ? self::DIRECTION_UP : self::DIRECTION_DOWN);
-        if ($this->currentDirection === self::DIRECTION_UP) {
-            $this->currentFloor++;
-        } elseif ($this->currentDirection === self::DIRECTION_DOWN) {
-            $this->currentFloor--;
-        }
-        if ($this->currentFloor === $this->targetFloor) {
-            $this->targetFloor = null;
-            $this->currentDirection = self::DIRECTION_NONE;
-            $this->currentState = self::STATE_WAITING;
+
+        $this->moveElevator();
+
+        if ($this->hasReachedDestination()) {
+            $this->resetTargetAndState();
         }
     }
 
@@ -74,6 +71,48 @@ class Elevator {
     public function getCurrentFloor(): int
     {
         return $this->currentFloor;
+    }
+
+    /**
+     * @return void
+     */
+    public function moveElevator(): void
+    {
+        if ($this->currentDirection === self::DIRECTION_UP) {
+            $this->currentFloor++;
+        } elseif ($this->currentDirection === self::DIRECTION_DOWN) {
+            $this->currentFloor--;
+        } else {
+            return;
+        }
+
+        EventPipeline::getInstance()->dispatchEvent(new ElevatorEvent('changed-floor'));
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasReachedDestination(): bool
+    {
+        return $this->currentFloor === $this->targetFloor;
+    }
+
+    /**
+     * @return void
+     */
+    public function resetTargetAndState(): void
+    {
+        $this->targetFloor = null;
+        $this->currentDirection = self::DIRECTION_NONE;
+        $this->currentState = self::STATE_WAITING;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTarget(): bool
+    {
+        return $this->targetFloor !== null;
     }
 
 }
