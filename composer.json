@@ -1,0 +1,23 @@
+{
+  "name": "vendor_name/lift",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "mathieu.dumoulin",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kata\\": [
+        "src/",
+        "tests/"
+      ]
+    }
+  }
+}
