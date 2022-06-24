@@ -114,16 +114,14 @@ class ElevatorTest extends TestCase
         $this->assertEquals(-1, $elevator->getCurrentFloor());
     }
 
-    public function testActWillResetTheDirectionStateAndTargetFloorWhenReachingTarget()
+    public function testActWillResetTheTargetFloorWhenReachingTarget()
     {
         $elevator = new Elevator();
         $elevator->move(2);
         $elevator->act();
         $elevator->act();
-        $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());
-        $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
+        $elevator->act();
         $this->assertNull($elevator->getTargetFloor());
-        $this->assertEquals(2, $elevator->getCurrentFloor());
     }
 
     public function testElevatorTriggersElevatorEventWhenChangingFloor():void

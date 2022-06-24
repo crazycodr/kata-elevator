@@ -2,7 +2,8 @@
 
 namespace Kata;
 
-class Elevator {
+class Elevator
+{
 
     const DIRECTION_NONE = 'none';
     const DIRECTION_UP = 'up';
@@ -10,6 +11,10 @@ class Elevator {
 
     const STATE_WAITING = 'waiting';
     const STATE_MOVING = 'moving';
+    const STATE_OPENING = 'opening';
+    const STATE_OPEN = 'open';
+    const STATE_CLOSING = 'closing';
+    const STATE_CLOSED = 'closed';
 
     private int $currentFloor = 0;
     private string $currentState = self::STATE_WAITING;
@@ -27,17 +32,18 @@ class Elevator {
 
     public function act(): void
     {
-        if (!$this->hasTarget()) {
-            return;
+        if ($this->hasReachedDestination() && $this->isInDoorState()) {
+            $this->moveDoors();
         }
 
-        $this->currentState = self::STATE_MOVING;
-        $this->currentDirection = ($this->currentFloor < $this->targetFloor ? self::DIRECTION_UP : self::DIRECTION_DOWN);
+        if ($this->hasReachedDestination() && $this->isMoving()) {
+            $this->stopElevator();
+            $this->resetTarget();
+            $this->moveDoors();
+        }
 
-        $this->moveElevator();
-
-        if ($this->hasReachedDestination()) {
-            $this->resetTargetAndState();
+        if (!$this->hasReachedDestination() && $this->hasTarget()) {
+            $this->moveElevator();
         }
     }
 
@@ -78,6 +84,9 @@ class Elevator {
      */
     public function moveElevator(): void
     {
+        $this->currentState = self::STATE_MOVING;
+        $this->currentDirection = ($this->currentFloor < $this->targetFloor ? self::DIRECTION_UP : self::DIRECTION_DOWN);
+
         if ($this->currentDirection === self::DIRECTION_UP) {
             $this->currentFloor++;
         } elseif ($this->currentDirection === self::DIRECTION_DOWN) {
@@ -87,6 +96,14 @@ class Elevator {
         }
 
         EventPipeline::getInstance()->dispatchEvent(new ElevatorEvent('changed-floor'));
+    }
+
+    /**
+     * @return void
+     */
+    public function stopElevator(): void
+    {
+        $this->currentState = self::STATE_WAITING;
     }
 
     /**
@@ -100,11 +117,9 @@ class Elevator {
     /**
      * @return void
      */
-    public function resetTargetAndState(): void
+    public function resetTarget(): void
     {
         $this->targetFloor = null;
-        $this->currentDirection = self::DIRECTION_NONE;
-        $this->currentState = self::STATE_WAITING;
     }
 
     /**
@@ -113,6 +128,38 @@ class Elevator {
     public function hasTarget(): bool
     {
         return $this->targetFloor !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMoving(): bool
+    {
+        return $this->getCurrentState() === self::STATE_MOVING;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInDoorState(): bool
+    {
+        return $this->getCurrentState() === self::STATE_OPEN
+            || $this->getCurrentState() === self::STATE_OPENING
+            || $this->getCurrentState() === self::STATE_CLOSING
+            || $this->getCurrentState() === self::STATE_CLOSED;
+    }
+
+    private function moveDoors(): void
+    {
+        if ($this->getCurrentState() === self::STATE_CLOSING) {
+            $this->currentState = self::STATE_CLOSED;
+        } elseif ($this->getCurrentState() === self::STATE_OPEN) {
+            $this->currentState = self::STATE_CLOSING;
+        } elseif ($this->getCurrentState() === self::STATE_OPENING) {
+            $this->currentState = self::STATE_OPEN;
+        } elseif ($this->getCurrentState() === self::STATE_WAITING) {
+            $this->currentState = self::STATE_CLOSED;
+        }
     }
 
 }
