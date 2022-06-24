@@ -144,4 +144,34 @@ class ElevatorTest extends TestCase
         $mock->method('getEventName')->willReturn('elevator-event');
         return $mock;
     }
+
+    public function testElevatorTriggersDoorEventsWhenMovingDoors():void
+    {
+        $eventPipeline = EventPipeline::getInstance();
+        $subscriber = $this->getDoorEventSubscriberMock();
+        $subscriber->expects($this->exactly(4))->method('respond')->willReturnCallback(function (DoorEvent $event) {
+            $this->logicalOr(
+                $this->equalTo('opening'),
+                $this->equalTo('open'),
+                $this->equalTo('closing'),
+                $this->equalTo('closed')
+            )->matches($event->getEventType());
+        });
+        $eventPipeline->addSubscriber($subscriber);
+        $elevator = new Elevator();
+        $elevator->move(2);
+        $elevator->act();
+        $elevator->act();
+        $elevator->act();
+        $elevator->act();
+        $elevator->act();
+        $elevator->act();
+    }
+
+    public function getDoorEventSubscriberMock(): Subscriber|MockObject
+    {
+        $mock = $this->createMock(Subscriber::class);
+        $mock->method('getEventName')->willReturn('door-event');
+        return $mock;
+    }
 }

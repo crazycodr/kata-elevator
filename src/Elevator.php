@@ -32,6 +32,7 @@ class Elevator
 
     public function act(): void
     {
+
         if ($this->hasReachedDestination() && $this->isInDoorState()) {
             $this->moveDoors();
         }
@@ -39,6 +40,10 @@ class Elevator
         if ($this->hasReachedDestination() && $this->isMoving()) {
             $this->stopElevator();
             $this->resetTarget();
+            $this->moveDoors();
+        }
+
+        if ($this->isInDoorState()) {
             $this->moveDoors();
         }
 
@@ -151,14 +156,18 @@ class Elevator
 
     private function moveDoors(): void
     {
-        if ($this->getCurrentState() === self::STATE_CLOSING) {
-            $this->currentState = self::STATE_CLOSED;
-        } elseif ($this->getCurrentState() === self::STATE_OPEN) {
-            $this->currentState = self::STATE_CLOSING;
+        if ($this->getCurrentState() === self::STATE_WAITING) {
+            $this->currentState = self::STATE_OPENING;
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('opening'));
         } elseif ($this->getCurrentState() === self::STATE_OPENING) {
             $this->currentState = self::STATE_OPEN;
-        } elseif ($this->getCurrentState() === self::STATE_WAITING) {
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('opened'));
+        } elseif ($this->getCurrentState() === self::STATE_OPEN) {
+            $this->currentState = self::STATE_CLOSING;
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closing'));
+        } elseif ($this->getCurrentState() === self::STATE_CLOSING) {
             $this->currentState = self::STATE_CLOSED;
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closed'));
         }
     }
 
