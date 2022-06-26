@@ -11,7 +11,7 @@ class DoorEvent implements Event
         $this->eventType = $eventType;
     }
 
-    function getName(): string
+    public function getName(): string
     {
         return 'door-event';
     }

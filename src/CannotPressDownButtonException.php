@@ -6,7 +6,6 @@ use RuntimeException;
 
 class CannotPressDownButtonException extends RuntimeException
 {
-
     private Floor $floor;
 
     public function __construct(Floor $floor)

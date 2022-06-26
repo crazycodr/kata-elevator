@@ -2,7 +2,7 @@
 
 namespace Kata;
 
-class ElevatorMovesWhenTimeIsTickingEventSubscriber implements Subscriber
+class ElevatorSetsTargetWhenNotMovingAndFloorButtonEventOccursEventSubscriber implements Subscriber
 {
     private Elevator $elevator;
 
@@ -13,11 +13,12 @@ class ElevatorMovesWhenTimeIsTickingEventSubscriber implements Subscriber
 
     public function getEventName(): string
     {
-        return 'tick';
+        return 'floor-button-event';
     }
 
     public function respond(Event $event): void
     {
-        $this->elevator->act();
+        /** @var FloorButtonEvent $event */
+        $this->elevator->move($event->getFloorNumber());
     }
 }

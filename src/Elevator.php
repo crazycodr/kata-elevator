@@ -4,17 +4,16 @@ namespace Kata;
 
 class Elevator
 {
+    public const DIRECTION_NONE = 'none';
+    public const DIRECTION_UP = 'up';
+    public const DIRECTION_DOWN = 'down';
 
-    const DIRECTION_NONE = 'none';
-    const DIRECTION_UP = 'up';
-    const DIRECTION_DOWN = 'down';
-
-    const STATE_WAITING = 'waiting';
-    const STATE_MOVING = 'moving';
-    const STATE_OPENING = 'opening';
-    const STATE_OPEN = 'open';
-    const STATE_CLOSING = 'closing';
-    const STATE_CLOSED = 'closed';
+    public const STATE_WAITING = 'waiting';
+    public const STATE_MOVING = 'moving';
+    public const STATE_OPENING = 'opening';
+    public const STATE_OPEN = 'open';
+    public const STATE_CLOSING = 'closing';
+    public const STATE_CLOSED = 'closed';
 
     private int $currentFloor = 0;
     private string $currentState = self::STATE_WAITING;
@@ -32,7 +31,6 @@ class Elevator
 
     public function act(): void
     {
-
         if ($this->hasReachedDestination() && $this->isInDoorState()) {
             $this->moveDoors();
         }
@@ -170,5 +168,4 @@ class Elevator
             EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closed'));
         }
     }
-
 }

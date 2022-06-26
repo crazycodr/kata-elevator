@@ -2,21 +2,20 @@
 
 namespace Kata;
 
-class Floor {
-
-    const BUTTON_NONE = 0;
-    const BUTTON_DOWN = 1;
-    const BUTTON_UP = 2;
-    const BUTTON_BOTH = self::BUTTON_DOWN + self::BUTTON_UP;
+class Floor
+{
+    public const BUTTON_NONE = 0;
+    public const BUTTON_DOWN = 1;
+    public const BUTTON_UP = 2;
+    public const BUTTON_BOTH = self::BUTTON_DOWN + self::BUTTON_UP;
 
     private int $number;
     private int $buttons;
-    private Elevator $elevator;
 
-    public function __construct(Elevator $elevator, int $number, int $buttons) {
+    public function __construct(int $number, int $buttons)
+    {
         $this->number = $number;
         $this->buttons = $buttons;
-        $this->elevator = $elevator;
     }
 
     /**
@@ -42,7 +41,7 @@ class Floor {
         if (!$this->hasDownButton()) {
             throw new CannotPressDownButtonException($this);
         }
-        $this->elevator->move($this->getFloorNumber());
+        EventPipeline::getInstance()->dispatchEvent(new FloorButtonEvent($this->getFloorNumber()));
     }
 
     public function callUpwards(): void
@@ -50,16 +49,6 @@ class Floor {
         if (!$this->hasUpButton()) {
             throw new CannotPressUpButtonException($this);
         }
-        $this->elevator->move($this->getFloorNumber());
+        EventPipeline::getInstance()->dispatchEvent(new FloorButtonEvent($this->getFloorNumber()));
     }
-
-    /**
-     * @return Elevator
-     */
-    public function getElevator(): Elevator
-    {
-        return $this->elevator;
-    }
-
-
 }

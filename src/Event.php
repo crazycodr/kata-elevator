@@ -4,5 +4,5 @@ namespace Kata;
 
 interface Event
 {
-    function getName(): string;
+    public function getName(): string;
 }

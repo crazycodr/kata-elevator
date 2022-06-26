@@ -2,7 +2,8 @@
 
 namespace Kata;
 
-interface Subscriber {
-    function getEventName(): string;
-    function respond(Event $event): void;
+interface Subscriber
+{
+    public function getEventName(): string;
+    public function respond(Event $event): void;
 }
