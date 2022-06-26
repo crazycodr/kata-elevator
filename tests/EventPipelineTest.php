@@ -70,7 +70,8 @@ class EventPipelineTest extends TestCase
         return $subscriber;
     }
 
-    public function getEventForSubscriberMockExpectingAResponse(): Event|MockObject {
+    public function getEventForSubscriberMockExpectingAResponse(): Event|MockObject
+    {
         $event = $this->createMock(Event::class);
         $event->method('getName')->willReturn('some-event');
         return $event;

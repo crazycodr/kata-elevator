@@ -124,7 +124,7 @@ class ElevatorTest extends TestCase
         $this->assertNull($elevator->getTargetFloor());
     }
 
-    public function testElevatorTriggersElevatorEventWhenChangingFloor():void
+    public function testElevatorTriggersElevatorEventWhenChangingFloor(): void
     {
         $eventPipeline = EventPipeline::getInstance();
         $subscriber = $this->getElevatorEventSubscriberMock();
@@ -145,7 +145,7 @@ class ElevatorTest extends TestCase
         return $mock;
     }
 
-    public function testElevatorTriggersDoorEventsWhenMovingDoors():void
+    public function testElevatorTriggersDoorEventsWhenMovingDoors(): void
     {
         $eventPipeline = EventPipeline::getInstance();
         $subscriber = $this->getDoorEventSubscriberMock();

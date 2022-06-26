@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ElevatorEventTest extends TestCase
 {
-
     public function testCreatingAnElevatorEventSavesTheEventType(): void
     {
         $event = new ElevatorEvent('moving');

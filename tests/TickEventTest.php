@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
  */
 class TickEventTest extends TestCase
 {
-
     public function testEventNameDoesNotChange(): void
     {
         $event = new TickEvent();
