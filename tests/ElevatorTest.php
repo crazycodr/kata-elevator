@@ -12,38 +12,38 @@ class ElevatorTest extends TestCase
 {
     public function testNewElevatorStartsAtFloor0()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(0, $elevator->getCurrentFloor());
     }
 
     public function testNewElevatorHasNoTarget()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertNull($elevator->getTargetFloor());
     }
 
     public function testNewElevatorIsWaiting()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
     }
 
     public function testNewElevatorHasNoDirection()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());
     }
 
     public function testMoveSetsTheProperTargetFloor()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $elevator->move(6);
         $this->assertEquals(6, $elevator->getTargetFloor());
     }
 
     public function testMoveDoesntChangeTargetIfAlreadyFulfilling()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $elevator->move(6);
         $elevator->move(10);
         $this->assertNotEquals(10, $elevator->getTargetFloor());
@@ -51,7 +51,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillNotChangeAnythingIfThereIsNoTarget()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $currentFloor = $elevator->getCurrentFloor();
         $currentDirection = $elevator->getCurrentDirection();
         $currentState = $elevator->getCurrentState();
@@ -63,7 +63,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillSetToMovingIfTargetIsSet()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
         $elevator->move(3);
         $elevator->act();
@@ -72,7 +72,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillSetDirectionUpWhenMovingToFloorThatIsHigherThanCurrentFloor()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());
         $elevator->move(3);
         $elevator->act();
@@ -81,7 +81,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillSetDirectionDownWhenMovingToFloorThatIsLowerThanCurrentFloor()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());
         $elevator->move(-3);
         $elevator->act();
@@ -90,7 +90,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillMoveElevatorUpWhenStateIsMovingAndDirectionIsUp()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());
         $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
         $this->assertEquals(0, $elevator->getCurrentFloor());
@@ -103,7 +103,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillMoveElevatorDownWhenStateIsMovingAndDirectionIsDown()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());
         $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
         $this->assertEquals(0, $elevator->getCurrentFloor());
@@ -116,7 +116,7 @@ class ElevatorTest extends TestCase
 
     public function testActWillResetTheTargetFloorWhenReachingTarget()
     {
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $elevator->move(2);
         $elevator->act();
         $elevator->act();
@@ -124,15 +124,20 @@ class ElevatorTest extends TestCase
         $this->assertNull($elevator->getTargetFloor());
     }
 
-    public function testElevatorTriggersElevatorEventWhenChangingFloor(): void
+    public function testElevatorTriggersElevatorFloorChangedEventWhenChangingFloor(): void
     {
         $eventPipeline = EventPipeline::getInstance();
         $subscriber = $this->getElevatorEventSubscriberMock();
-        $subscriber->expects($this->exactly(2))->method('respond')->willReturnCallback(function (ElevatorEvent $event) {
+        $subscriber->expects($this->exactly(2))->method('respond')->willReturnCallback(function (ElevatorFloorChangedEvent $event) {
             $this->assertEquals('changed-floor', $event->getEventType());
+            $this->assertEquals('el1', $event->getElevator());
+            $this->logicalOr(
+                $this->equalTo(1),
+                $this->equalTo(2),
+            )->evaluate($event->getFloor());
         });
         $eventPipeline->addSubscriber($subscriber);
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $elevator->move(2);
         $elevator->act();
         $elevator->act();
@@ -158,7 +163,7 @@ class ElevatorTest extends TestCase
             )->matches($event->getEventType());
         });
         $eventPipeline->addSubscriber($subscriber);
-        $elevator = new Elevator();
+        $elevator = new Elevator('el1');
         $elevator->move(2);
         $elevator->act();
         $elevator->act();
@@ -173,5 +178,11 @@ class ElevatorTest extends TestCase
         $mock = $this->createMock(Subscriber::class);
         $mock->method('getEventName')->willReturn('door-event');
         return $mock;
+    }
+
+    public function testElevatorIdIsSaved(): void
+    {
+        $elevator = new Elevator('el2');
+        $this->assertEquals('el2', $elevator->getId());
     }
 }

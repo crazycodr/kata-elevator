@@ -20,6 +20,12 @@ class Elevator
     private string $currentDirection = self::DIRECTION_NONE;
 
     private ?int $targetFloor = null;
+    private string $id;
+
+    public function __construct(string $id)
+    {
+        $this->id = $id;
+    }
 
     public function move(int $toFloor): void
     {
@@ -98,7 +104,7 @@ class Elevator
             return;
         }
 
-        EventPipeline::getInstance()->dispatchEvent(new ElevatorEvent('changed-floor'));
+        EventPipeline::getInstance()->dispatchEvent(new ElevatorFloorChangedEvent('changed-floor', $this->getId(), $this->getCurrentFloor()));
     }
 
     /**
@@ -156,16 +162,24 @@ class Elevator
     {
         if ($this->getCurrentState() === self::STATE_WAITING) {
             $this->currentState = self::STATE_OPENING;
-            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('opening'));
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('opening', $this->getId(), $this->getCurrentFloor()));
         } elseif ($this->getCurrentState() === self::STATE_OPENING) {
             $this->currentState = self::STATE_OPEN;
-            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('opened'));
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('opened', $this->getId(), $this->getCurrentFloor()));
         } elseif ($this->getCurrentState() === self::STATE_OPEN) {
             $this->currentState = self::STATE_CLOSING;
-            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closing'));
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closing', $this->getId(), $this->getCurrentFloor()));
         } elseif ($this->getCurrentState() === self::STATE_CLOSING) {
             $this->currentState = self::STATE_CLOSED;
-            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closed'));
+            EventPipeline::getInstance()->dispatchEvent(new DoorEvent('closed', $this->getId(), $this->getCurrentFloor()));
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
     }
 }

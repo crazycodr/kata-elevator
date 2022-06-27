@@ -2,7 +2,7 @@
 
 namespace Kata;
 
-class DoorEvent implements Event
+class ElevatorFloorChangedEvent implements Event
 {
     private string $eventType;
     private string $elevator;
@@ -17,7 +17,7 @@ class DoorEvent implements Event
 
     public function getName(): string
     {
-        return 'door-event';
+        return 'elevator-event';
     }
 
     public function getEventType(): string
@@ -25,12 +25,18 @@ class DoorEvent implements Event
         return $this->eventType;
     }
 
+    /**
+     * @return string
+     */
     public function getElevator(): string
     {
         return $this->elevator;
     }
 
-    public function getFloor(): ?int
+    /**
+     * @return int
+     */
+    public function getFloor(): int
     {
         return $this->floor;
     }
