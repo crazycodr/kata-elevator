@@ -12,6 +12,11 @@ class Floor
     private int $number;
     private int $buttons;
 
+    /**
+     * @var ElevatorDisplay[]
+     */
+    private array $displays = [];
+
     public function __construct(int $number, int $buttons)
     {
         $this->number = $number;
@@ -50,5 +55,18 @@ class Floor
             throw new CannotPressUpButtonException($this);
         }
         EventPipeline::getInstance()->dispatchEvent(new FloorButtonEvent($this->getFloorNumber()));
+    }
+
+    public function setDisplay(string $elevator, ElevatorDisplay $display): void
+    {
+        $this->displays[$elevator] = $display;
+    }
+
+    public function getDisplay(string $elevator): ?ElevatorDisplay
+    {
+        if (!array_key_exists($elevator, $this->displays)) {
+            return null;
+        }
+        return $this->displays[$elevator];
     }
 }

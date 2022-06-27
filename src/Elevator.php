@@ -21,10 +21,16 @@ class Elevator
 
     private ?int $targetFloor = null;
     private string $id;
+    private ?ElevatorDisplay $display = null;
 
     public function __construct(string $id)
     {
         $this->id = $id;
+    }
+
+    public function setDisplay(ElevatorDisplay $display): void
+    {
+        $this->display = $display;
     }
 
     public function move(int $toFloor): void
@@ -181,5 +187,13 @@ class Elevator
     public function getId(): string
     {
         return $this->id;
+    }
+
+    /**
+     * @return ?ElevatorDisplay
+     */
+    public function getDisplay(): ?ElevatorDisplay
+    {
+        return $this->display;
     }
 }

@@ -185,4 +185,18 @@ class ElevatorTest extends TestCase
         $elevator = new Elevator('el2');
         $this->assertEquals('el2', $elevator->getId());
     }
+
+    public function testElevatorDoesNotHaveADisplayByDefault(): void
+    {
+        $elevator = new Elevator('el1');
+        $this->assertNull($elevator->getDisplay());
+    }
+
+    public function testElevatorSavesDisplayProperly(): void
+    {
+        $display = new ElevatorDisplay('el1');
+        $elevator = new Elevator('el1');
+        $elevator->setDisplay($display);
+        $this->assertSame($display, $elevator->getDisplay());
+    }
 }

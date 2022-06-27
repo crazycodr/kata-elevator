@@ -76,4 +76,35 @@ class FloorTest extends TestCase
         $floor7->callUpwards();
         $this->assertEquals(4, $elevator->getTargetFloor());
     }
+
+    public function testFloorDoesNotHaveADisplayByDefaultAndReturnsNullWhenElevatorIdHasNoBoundDisplay(): void
+    {
+        $floor = new Floor(1, Floor::BUTTON_NONE);
+        $this->assertNull($floor->getDisplay('el1'));
+    }
+
+    public function testFloorSavesDisplayProperlyForEachElevatorId(): void
+    {
+        $display1 = new ElevatorDisplay('el1');
+        $display2 = new ElevatorDisplay('el2');
+        $display3 = new ElevatorDisplay('el3');
+        $floor = new Floor(1, Floor::BUTTON_NONE);
+        $floor->setDisplay('el1', $display1);
+        $floor->setDisplay('el2', $display2);
+        $floor->setDisplay('el3', $display3);
+        $this->assertSame($display1, $floor->getDisplay('el1'));
+        $this->assertSame($display2, $floor->getDisplay('el2'));
+        $this->assertSame($display3, $floor->getDisplay('el3'));
+    }
+
+    public function testFloorReplacesDisplayForExistingElevatorId(): void
+    {
+        $display1 = new ElevatorDisplay('el1');
+        $display2 = new ElevatorDisplay('el1');
+        $floor = new Floor(1, Floor::BUTTON_NONE);
+        $floor->setDisplay('el1', $display1);
+        $this->assertSame($display1, $floor->getDisplay('el1'));
+        $floor->setDisplay('el1', $display2);
+        $this->assertSame($display2, $floor->getDisplay('el1'));
+    }
 }
