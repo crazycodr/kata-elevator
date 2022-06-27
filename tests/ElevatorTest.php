@@ -22,13 +22,13 @@ class ElevatorTest extends TestCase
         $this->assertNull($elevator->getTargetFloor());
     }
 
-    public function testNewElevatorIsWaiting()
+    public function testNewElevatorIsWaitingByDefault()
     {
         $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::STATE_WAITING, $elevator->getCurrentState());
     }
 
-    public function testNewElevatorHasNoDirection()
+    public function testNewElevatorHasNoDirectionByDefault()
     {
         $elevator = new Elevator('el1');
         $this->assertEquals(Elevator::DIRECTION_NONE, $elevator->getCurrentDirection());

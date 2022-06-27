@@ -17,6 +17,11 @@ class Floor
      */
     private array $displays = [];
 
+    /**
+     * @var LightIndicator[]
+     */
+    private array $lightIndicators = [];
+
     public function __construct(int $number, int $buttons)
     {
         $this->number = $number;
@@ -68,5 +73,18 @@ class Floor
             return null;
         }
         return $this->displays[$elevator];
+    }
+
+    public function setLightIndicator(string $elevator, LightIndicator $lightIndicator): void
+    {
+        $this->lightIndicators[$elevator] = $lightIndicator;
+    }
+
+    public function getLightIndicator(string $elevator): ?LightIndicator
+    {
+        if (!array_key_exists($elevator, $this->lightIndicators)) {
+            return null;
+        }
+        return $this->lightIndicators[$elevator];
     }
 }

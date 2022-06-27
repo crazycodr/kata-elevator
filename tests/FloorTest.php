@@ -107,4 +107,35 @@ class FloorTest extends TestCase
         $floor->setDisplay('el1', $display2);
         $this->assertSame($display2, $floor->getDisplay('el1'));
     }
+
+    public function testFloorDoesNotHaveALightIndicatorByDefaultAndReturnsNullWhenElevatorIdHasNoBoundLightIndicator(): void
+    {
+        $floor = new Floor(1, Floor::BUTTON_NONE);
+        $this->assertNull($floor->getLightIndicator('el1'));
+    }
+
+    public function testFloorSavesLightIndicatorProperlyForEachElevatorId(): void
+    {
+        $display1 = new LightIndicator('el1', 1);
+        $display2 = new LightIndicator('el2', 1);
+        $display3 = new LightIndicator('el3', 1);
+        $floor = new Floor(1, Floor::BUTTON_NONE);
+        $floor->setLightIndicator('el1', $display1);
+        $floor->setLightIndicator('el2', $display2);
+        $floor->setLightIndicator('el3', $display3);
+        $this->assertSame($display1, $floor->getLightIndicator('el1'));
+        $this->assertSame($display2, $floor->getLightIndicator('el2'));
+        $this->assertSame($display3, $floor->getLightIndicator('el3'));
+    }
+
+    public function testFloorReplacesLightIndicatorForExistingElevatorId(): void
+    {
+        $display1 = new LightIndicator('el1', 1);
+        $display2 = new LightIndicator('el1', 1);
+        $floor = new Floor(1, Floor::BUTTON_NONE);
+        $floor->setLightIndicator('el1', $display1);
+        $this->assertSame($display1, $floor->getLightIndicator('el1'));
+        $floor->setLightIndicator('el1', $display2);
+        $this->assertSame($display2, $floor->getLightIndicator('el1'));
+    }
 }
