@@ -23,9 +23,13 @@ class ElevatorSetsTargetWhenNoTargetAndFloorButtonEventOccursEventSubscriber imp
     public function respond(Event $event): void
     {
         /** @var FloorButtonEvent $event */
+        if ($event->isFulfilled()) {
+            return;
+        }
         if ($this->elevator->getTargetFloor() !== null) {
             return;
         }
         $this->elevator->move($event->getFloorNumber());
+        $event->setFulfilled();
     }
 }

@@ -21,4 +21,17 @@ class FloorButtonEventTest extends TestCase
         $event = new FloorButtonEvent(17);
         $this->assertEquals(17, $event->getFloorNumber());
     }
+
+    public function testIsNotFulfilledByDefault(): void
+    {
+        $event = new FloorButtonEvent(17);
+        $this->assertFalse($event->isFulfilled());
+    }
+
+    public function testSettingFulfilledSavesNewStateProperly(): void
+    {
+        $event = new FloorButtonEvent(17);
+        $event->setFulfilled();
+        $this->assertTrue($event->isFulfilled());
+    }
 }
