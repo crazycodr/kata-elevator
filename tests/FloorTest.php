@@ -1,8 +1,14 @@
 <?php
 
-namespace Kata;
-
 use JetBrains\PhpStorm\ArrayShape;
+use Kata\CannotPressDownButtonException;
+use Kata\CannotPressUpButtonException;
+use Kata\Elevator;
+use Kata\ElevatorDisplay;
+use Kata\ElevatorSetsTargetWhenNotMovingAndFloorButtonEventOccursEventSubscriber;
+use Kata\EventPipeline;
+use Kata\Floor;
+use Kata\LightIndicator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +18,6 @@ class FloorTest extends TestCase
 {
     public function testNewFloorSavesTheFloorProperly(): void
     {
-        $elevator = new Elevator('el1');
         $floor = new Floor(6, Floor::BUTTON_NONE);
         $this->assertEquals(6, $floor->getFloorNumber());
     }
@@ -22,7 +27,6 @@ class FloorTest extends TestCase
      */
     public function testNewFloorSavesTheButtonsProperly(int $buttons, bool $upButtonShouldExist, bool $downButtonShouldExist): void
     {
-        $elevator = new Elevator('el1');
         $floor = new Floor(0, $buttons);
         $this->assertEquals($upButtonShouldExist, $floor->hasUpButton());
         $this->assertEquals($downButtonShouldExist, $floor->hasDownButton());
@@ -41,7 +45,6 @@ class FloorTest extends TestCase
 
     public function testCallingElevatorUpWhenThereIsNoButtonShouldThrowException(): void
     {
-        $elevator = new Elevator('el1');
         $floor = new Floor(0, Floor::BUTTON_NONE);
         $this->expectException(CannotPressUpButtonException::class);
         $floor->callUpwards();
@@ -49,7 +52,6 @@ class FloorTest extends TestCase
 
     public function testCallingElevatorDownWhenThereIsNoButtonShouldThrowException(): void
     {
-        $elevator = new Elevator('el1');
         $floor = new Floor(0, Floor::BUTTON_NONE);
         $this->expectException(CannotPressDownButtonException::class);
         $floor->callDownwards();

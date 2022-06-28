@@ -1,7 +1,11 @@
 <?php
 
-namespace Kata;
-
+use Kata\DoorEvent;
+use Kata\Elevator;
+use Kata\ElevatorDisplay;
+use Kata\ElevatorFloorChangedEvent;
+use Kata\EventPipeline;
+use Kata\Subscriber;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

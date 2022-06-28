@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\ElevatorDisplay;
 use PHPUnit\Framework\TestCase;
 
 /**

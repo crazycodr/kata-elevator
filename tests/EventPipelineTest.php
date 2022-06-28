@@ -1,7 +1,8 @@
 <?php
 
-namespace Kata;
-
+use Kata\Event;
+use Kata\EventPipeline;
+use Kata\Subscriber;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

@@ -3,14 +3,16 @@
 use Kata\Elevator;
 use Kata\ElevatorSpeaker;
 use Kata\EventPipeline;
+use Kata\Floor;
+use Kata\FloorSpeaker;
 use Kata\SpeakerEvent;
 use Kata\Subscriber;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Kata\ElevatorSpeakerRingsOnDoorOpeningEventSubscriber
+ * @covers \Kata\FloorSpeakerRingsOnDoorOpeningEventSubscriber
  */
-class ElevatorSpeakerRingsOnDoorOpeningEventSubscriberTest extends TestCase
+class FloorSpeakerRingsOnDoorOpeningEventSubscriberTest extends TestCase
 {
     public function setUp(): void
     {
@@ -21,17 +23,17 @@ class ElevatorSpeakerRingsOnDoorOpeningEventSubscriberTest extends TestCase
     public function testItEmitsARingSpeakerEventWhenDoorOpens(): void
     {
         $elevator = new Elevator('el1');
-        new ElevatorSpeaker('el1');
+        new FloorSpeaker(1);
         $ringed = false;
-        $beepSubscriberMock = $this->createMock(Subscriber::class);
-        $beepSubscriberMock->method('getEventName')->willReturn('speaker-event');
-        $beepSubscriberMock->expects($this->atLeastOnce())->method('respond')->willReturnCallback(function (SpeakerEvent $event) use (&$ringed) {
+        $ringSubscriberMock = $this->createMock(Subscriber::class);
+        $ringSubscriberMock->method('getEventName')->willReturn('speaker-event');
+        $ringSubscriberMock->expects($this->atLeastOnce())->method('respond')->willReturnCallback(function (SpeakerEvent $event) use (&$ringed) {
             if ($event->getSoundType() === 'ring') {
                 $ringed = true;
             }
             return $ringed;
         });
-        EventPipeline::getInstance()->addSubscriber($beepSubscriberMock);
+        EventPipeline::getInstance()->addSubscriber($ringSubscriberMock);
         $elevator->move(1);
         $elevator->act();
         $elevator->act();

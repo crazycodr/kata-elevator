@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\SpeakerEvent;
 use PHPUnit\Framework\TestCase;
 
 /**

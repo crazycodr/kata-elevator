@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\TickEvent;
 use PHPUnit\Framework\TestCase;
 
 /**

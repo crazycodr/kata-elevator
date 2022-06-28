@@ -1,7 +1,10 @@
 <?php
 
-namespace Kata;
-
+use Kata\Elevator;
+use Kata\ElevatorSpeaker;
+use Kata\EventPipeline;
+use Kata\SpeakerEvent;
+use Kata\Subscriber;
 use PHPUnit\Framework\TestCase;
 
 /**

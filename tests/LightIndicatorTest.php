@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\LightIndicator;
 use PHPUnit\Framework\TestCase;
 
 /**

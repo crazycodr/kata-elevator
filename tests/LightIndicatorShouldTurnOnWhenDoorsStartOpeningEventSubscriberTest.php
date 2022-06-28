@@ -1,7 +1,8 @@
 <?php
 
-namespace Kata;
-
+use Kata\DoorEvent;
+use Kata\LightIndicator;
+use Kata\LightIndicatorShouldTurnOnWhenDoorsStartOpeningEventSubscriber;
 use PHPUnit\Framework\TestCase;
 
 /**

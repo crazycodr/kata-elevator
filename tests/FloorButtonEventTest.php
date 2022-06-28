@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\FloorButtonEvent;
 use PHPUnit\Framework\TestCase;
 
 /**

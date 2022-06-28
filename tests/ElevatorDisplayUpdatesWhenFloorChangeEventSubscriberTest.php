@@ -1,7 +1,10 @@
 <?php
 
-namespace Kata;
-
+use Kata\Elevator;
+use Kata\ElevatorDisplay;
+use Kata\ElevatorDisplayUpdatesWhenFloorChangeEventSubscriber;
+use Kata\ElevatorFloorChangedEvent;
+use Kata\Floor;
 use PHPUnit\Framework\TestCase;
 
 /**

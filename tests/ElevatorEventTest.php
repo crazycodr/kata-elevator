@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\ElevatorFloorChangedEvent;
 use PHPUnit\Framework\TestCase;
 
 /**

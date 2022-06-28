@@ -1,7 +1,9 @@
 <?php
 
-namespace Kata;
-
+use Kata\ElevatorSpeaker;
+use Kata\ElevatorSpeakerBeepsOnFloorChangeEventSubscriber;
+use Kata\ElevatorSpeakerRingsOnDoorOpeningEventSubscriber;
+use Kata\EventPipeline;
 use PHPUnit\Framework\TestCase;
 
 /**

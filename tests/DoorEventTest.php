@@ -1,7 +1,6 @@
 <?php
 
-namespace Kata;
-
+use Kata\DoorEvent;
 use PHPUnit\Framework\TestCase;
 
 /**
